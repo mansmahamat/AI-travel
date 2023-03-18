@@ -146,40 +146,6 @@ const defaultValues = {
   specialRegime: [],
 }
 
-const ResponseData = ({ response }: any) => {
-  return (
-    <div className="flex text-black flex-col justify-center items-center">
-      <h2 className="text-2xl font-normal">
-        <span role="img" aria-label="emoji"></span> Plan
-      </h2>
-      <div className="w-4/5 text-base font-normal text-black rounded-md p-4 m-8">
-        <ReactMarkdown children={response} remarkPlugins={[remarkGfm]} />
-      </div>
-      <div>
-        <button
-          className="rounded text-xs font-bold cursor-pointer text-black bg-white"
-          onClick={() => {
-            const blob = new Blob([response], {
-              type: "text/plain;charset=utf-8",
-            })
-            const url = URL.createObjectURL(blob)
-            const link = document.createElement("a")
-            link.setAttribute("href", url)
-            link.setAttribute("download", "travel-plan.txt")
-            document.body.appendChild(link)
-            link.click()
-            document.body.removeChild(link)
-            URL.revokeObjectURL(url)
-            return false
-          }}
-        >
-          Download
-        </button>
-      </div>
-    </div>
-  )
-}
-
 export default function Home() {
   const [loading, setLoading] = useState(false)
   const [response, setResponse] = useState("")
@@ -188,6 +154,40 @@ export default function Home() {
   const [selectedCuisineTypes, setSelectedCuisineTypes] = useState([])
   const [selectedLanguage, setSelectedLanguage] = useState(options.languages[0])
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const ResponseData = ({ response }: any) => {
+    return (
+      <div className="flex text-black flex-col justify-center items-center">
+        <h2 onClick={() => setResponse("")} className="text-2xl font-normal">
+          <span role="img" aria-label="emoji"></span> RESET
+        </h2>
+        <div className="w-4/5 text-base font-normal text-black rounded-md p-4 m-8">
+          <ReactMarkdown children={response} remarkPlugins={[remarkGfm]} />
+        </div>
+        <div>
+          <button
+            className="rounded text-xs font-bold cursor-pointer text-black bg-white"
+            onClick={() => {
+              const blob = new Blob([response], {
+                type: "text/plain;charset=utf-8",
+              })
+              const url = URL.createObjectURL(blob)
+              const link = document.createElement("a")
+              link.setAttribute("href", url)
+              link.setAttribute("download", "travel-plan.txt")
+              document.body.appendChild(link)
+              link.click()
+              document.body.removeChild(link)
+              URL.revokeObjectURL(url)
+              return false
+            }}
+          >
+            Download
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   const handleCuisineTypeClick = (cuisineType: any) => {
     //@ts-ignore
@@ -618,21 +618,22 @@ export default function Home() {
 
               <div className="absolute inset-0 py-6 px-4 sm:px-6 lg:px-8">
                 <div className="h-full   rounded-lg">
-                  <form className=" h-full" onSubmit={handleSubmit}>
-                    <label htmlFor="destinationCountry">
-                      Destination Country
-                    </label>
-                    <input
-                      className="rounded-md  border border-indigo-600  text-xs text-black"
-                      type="text"
-                      placeholder="e.g. San Francisco/USA, Paris/France, Istanbul/Turkey, etc."
-                      id="destinationCountry"
-                      name="destinationCountry"
-                      value={values.destinationCountry}
-                      onChange={handleChange}
-                      required
-                    />
-                    {/* <div>
+                  {!response ? (
+                    <form className=" h-full" onSubmit={handleSubmit}>
+                      <label htmlFor="destinationCountry">
+                        Destination Country
+                      </label>
+                      <input
+                        className="rounded-md  border border-indigo-600  text-xs text-black"
+                        type="text"
+                        placeholder="e.g. San Francisco/USA, Paris/France, Istanbul/Turkey, etc."
+                        id="destinationCountry"
+                        name="destinationCountry"
+                        value={values.destinationCountry}
+                        onChange={handleChange}
+                        required
+                      />
+                      {/* <div>
                 <label htmlFor="topDestinations">🔥Top Destionations:</label>
                 {topLocations.map((location) => (
                   <div
@@ -643,243 +644,248 @@ export default function Home() {
                   </div>
                 ))}
               </div> */}
-                    <div className="flex flex-row justify-between items-center">
-                      <div className="flex flex-row items-start flex-wrap w-full">
-                        <label htmlFor="budget">
-                          Budget
-                          <p
-                            style={{
-                              display: "inline-block",
-                              color: "#666",
-                              fontSize: "10px",
-                            }}
-                          >
-                            (with currency)
-                          </p>
-                        </label>
-                        <input
-                          className="rounded-md  border border-indigo-600  text-xs text-black"
-                          type="text"
-                          placeholder="e.g. $1000 USD, 1000 EUR, etc."
-                          id="budget"
-                          name="budget"
-                          value={values.budget}
-                          onChange={handleChange}
-                          required
-                        />
-                      </div>
-                      <div className="flex flex-row items-start flex-wrap w-full">
-                        <label htmlFor="tripDuration">
-                          Trip Duration
-                          <p
-                            style={{
-                              display: "inline-block",
-                              color: "#666",
-                              fontSize: "10px",
-                            }}
-                          >
-                            (in days)
-                          </p>
-                        </label>
-                        <input
-                          className="rounded-md  border border-indigo-600  text-xs text-black"
-                          type="number"
-                          id="tripDuration"
-                          name="tripDuration"
-                          value={values.tripDuration}
-                          onChange={handleChange}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <label htmlFor="interests">Interests</label>
-                    <div className="flex flex-row items-start flex-wrap w-full">
-                      {options.interestsNew.map((interest, index) => (
-                        <div
-                          key={index}
-                          className={
-                            //@ts-ignore
-                            selectedInterests.includes(interest?.name)
-                              ? "flex border border-emerald-600 text-xs items-center p-1 mr-1 mb-1 cursor-pointer rounded-md"
-                              : "flex text-xs items-center p-1 mr-1 mb-1 cursor-pointer rounded-md"
-                          }
-                          onClick={() => {
-                            handleInterestClick(interest.name)
-                          }}
-                          //@ts-ignore
-
-                          value={interest}
-                        >
-                          <span aria-label="emoji">{interest.emoji}</span>
-                          <span>{interest.name}</span>
+                      <div className="flex flex-row justify-between items-center">
+                        <div className="flex flex-row items-start flex-wrap w-full">
+                          <label htmlFor="budget">
+                            Budget
+                            <p
+                              style={{
+                                display: "inline-block",
+                                color: "#666",
+                                fontSize: "10px",
+                              }}
+                            >
+                              (with currency)
+                            </p>
+                          </label>
+                          <input
+                            className="rounded-md  border border-indigo-600  text-xs text-black"
+                            type="text"
+                            placeholder="e.g. $1000 USD, 1000 EUR, etc."
+                            id="budget"
+                            name="budget"
+                            value={values.budget}
+                            onChange={handleChange}
+                            required
+                          />
                         </div>
-                      ))}
-                    </div>
-
-                    <div className="flex flex-row justify-between items-center">
-                      <div className="flex flex-row items-start flex-wrap w-full">
-                        <label htmlFor="accommodationType">Accommodation</label>
-                        <select
-                          id="accommodationType"
-                          name="accommodationType"
-                          value={values.accommodationType}
-                          onChange={handleChange}
-                        >
-                          {options.accommodationTypes.map((option) => (
-                            <option key={option} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="flex flex-row  items-center flex-wrap w-full">
-                        <label
-                          className="text-xs font-bold p-2"
-                          htmlFor="travelStyle"
-                        >
-                          Travel Style
-                        </label>
-                        <select
-                          id="travelStyle"
-                          name="travelStyle"
-                          value={values.travelStyle}
-                          onChange={handleChange}
-                          className="rounded-lg text-xs text-black"
-                        >
-                          {options.travelStyles.map((option) => (
-                            <option key={option} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    <label htmlFor="transportationType">
-                      Transportation Type
-                      <p
-                        style={{
-                          display: "inline-block",
-                          fontSize: "10px",
-
-                          color: "#666",
-                        }}
-                      >
-                        (e.g. car, train, bus, etc.)
-                      </p>
-                    </label>
-                    <input
-                      className="rounded-md  border border-indigo-600  text-xs text-black"
-                      type="text"
-                      id="transportationType"
-                      name="transportationType"
-                      value={values.transportationType}
-                      onChange={handleChange}
-                      required
-                    />
-
-                    <label
-                      className="text-xs font-bold p-2"
-                      htmlFor="activityType"
-                    >
-                      Activity Type
-                      <p
-                        style={{
-                          display: "inline-block",
-                          fontSize: "10px",
-
-                          color: "#666",
-                        }}
-                      >
-                        (select multiple options)
-                      </p>
-                    </label>
-                    <select
-                      id="activityType"
-                      name="activityType"
-                      multiple
-                      value={values.activityType}
-                      className="rounded-lg text-xs text-black"
-                      onChange={handleMultiSelectChange}
-                    >
-                      {options.activityTypes.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                    <label htmlFor="cuisineType">Cuisine Type</label>
-                    <div className="flex flex-row items-center flex-wrap">
-                      {options.cuisineTypes.map((cuisineType) => (
-                        <div
-                          multiple
-                          value={values.cuisineType}
-                          //@ts-ignore
-
-                          onChange={handleMultiSelectChange}
-                          key={cuisineType.name}
-                          className={
-                            //@ts-ignore
-
-                            selectedCuisineTypes.includes(cuisineType.name)
-                              ? "border border-emerald-600 flex flex-row justify-center items-center cursor-pointer text-xs p-2 mb-1 mr-1 rounded-md"
-                              : "flex flex-row justify-center items-center cursor-pointer text-xs p-2 mb-1 mr-1 rounded-md"
-                          }
-                          onClick={() => {
-                            handleCuisineTypeClick(cuisineType.name)
-                          }}
-                        >
-                          <span role="img" aria-label={cuisineType.name}>
-                            {cuisineType.emoji}
-                          </span>
-
-                          <br />
-
-                          <span>{cuisineType.name}</span>
+                        <div className="flex flex-row items-start flex-wrap w-full">
+                          <label htmlFor="tripDuration">
+                            Trip Duration
+                            <p
+                              style={{
+                                display: "inline-block",
+                                color: "#666",
+                                fontSize: "10px",
+                              }}
+                            >
+                              (in days)
+                            </p>
+                          </label>
+                          <input
+                            className="rounded-md  border border-indigo-600  text-xs text-black"
+                            type="number"
+                            id="tripDuration"
+                            name="tripDuration"
+                            value={values.tripDuration}
+                            onChange={handleChange}
+                            required
+                          />
                         </div>
-                      ))}
-                    </div>
-
-                    <div className=" flex flex-col">
-                      <label>Language</label>
-                      <div className="flex flex-row justify-start items-center flex-wrap">
-                        {options.languages.map((option) => (
+                      </div>
+                      <label htmlFor="interests">Interests</label>
+                      <div className="flex flex-row items-start flex-wrap w-full">
+                        {options.interestsNew.map((interest, index) => (
                           <div
-                            key={option.value}
-                            onClick={() => {
-                              //@ts-ignore
-
-                              handleLanguageClick(option)
-                            }}
-                            //@ts-ignore
-
-                            value={values.language}
+                            key={index}
                             className={
                               //@ts-ignore
-
-                              selectedLanguage === option.value
-                                ? "flex border border-emerald-600  text-2xl flex-col items-center mr-1 p-2 rounded-md cursor-pointer"
-                                : "flex text-2xl flex-col items-center mr-1 p-2 rounded-md cursor-pointer"
+                              selectedInterests.includes(interest?.name)
+                                ? "flex border border-emerald-600 text-xs items-center p-1 mr-1 mb-1 cursor-pointer rounded-md"
+                                : "flex text-xs items-center p-1 mr-1 mb-1 cursor-pointer rounded-md"
                             }
+                            onClick={() => {
+                              handleInterestClick(interest.name)
+                            }}
+                            //@ts-ignore
+
+                            value={interest}
                           >
-                            <span role="img" aria-label={option.label}>
-                              {option.icon}
-                            </span>
+                            <span aria-label="emoji">{interest.emoji}</span>
+                            <span>{interest.name}</span>
                           </div>
                         ))}
                       </div>
-                    </div>
-                    <button
-                      //@ts-ignore
 
-                      loading={loading}
-                      type="submit"
-                      disabled={loading}
-                      className="bg-red-600 py-2 px-2 cursor-pointer"
-                    >
-                      SUBMIT
-                    </button>
-                  </form>
+                      <div className="flex flex-row justify-between items-center">
+                        <div className="flex flex-row items-start flex-wrap w-full">
+                          <label htmlFor="accommodationType">
+                            Accommodation
+                          </label>
+                          <select
+                            id="accommodationType"
+                            name="accommodationType"
+                            value={values.accommodationType}
+                            onChange={handleChange}
+                          >
+                            {options.accommodationTypes.map((option) => (
+                              <option key={option} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="flex flex-row  items-center flex-wrap w-full">
+                          <label
+                            className="text-xs font-bold p-2"
+                            htmlFor="travelStyle"
+                          >
+                            Travel Style
+                          </label>
+                          <select
+                            id="travelStyle"
+                            name="travelStyle"
+                            value={values.travelStyle}
+                            onChange={handleChange}
+                            className="rounded-lg text-xs text-black"
+                          >
+                            {options.travelStyles.map((option) => (
+                              <option key={option} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <label htmlFor="transportationType">
+                        Transportation Type
+                        <p
+                          style={{
+                            display: "inline-block",
+                            fontSize: "10px",
+
+                            color: "#666",
+                          }}
+                        >
+                          (e.g. car, train, bus, etc.)
+                        </p>
+                      </label>
+                      <input
+                        className="rounded-md  border border-indigo-600  text-xs text-black"
+                        type="text"
+                        id="transportationType"
+                        name="transportationType"
+                        value={values.transportationType}
+                        onChange={handleChange}
+                        required
+                      />
+
+                      <label
+                        className="text-xs font-bold p-2"
+                        htmlFor="activityType"
+                      >
+                        Activity Type
+                        <p
+                          style={{
+                            display: "inline-block",
+                            fontSize: "10px",
+
+                            color: "#666",
+                          }}
+                        >
+                          (select multiple options)
+                        </p>
+                      </label>
+                      <select
+                        id="activityType"
+                        name="activityType"
+                        multiple
+                        value={values.activityType}
+                        className="rounded-lg text-xs text-black"
+                        onChange={handleMultiSelectChange}
+                      >
+                        {options.activityTypes.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                      <label htmlFor="cuisineType">Cuisine Type</label>
+                      <div className="flex flex-row items-center flex-wrap">
+                        {options.cuisineTypes.map((cuisineType) => (
+                          <div
+                            multiple
+                            value={values.cuisineType}
+                            //@ts-ignore
+
+                            onChange={handleMultiSelectChange}
+                            key={cuisineType.name}
+                            className={
+                              //@ts-ignore
+
+                              selectedCuisineTypes.includes(cuisineType.name)
+                                ? "border border-emerald-600 flex flex-row justify-center items-center cursor-pointer text-xs p-2 mb-1 mr-1 rounded-md"
+                                : "flex flex-row justify-center items-center cursor-pointer text-xs p-2 mb-1 mr-1 rounded-md"
+                            }
+                            onClick={() => {
+                              handleCuisineTypeClick(cuisineType.name)
+                            }}
+                          >
+                            <span role="img" aria-label={cuisineType.name}>
+                              {cuisineType.emoji}
+                            </span>
+
+                            <br />
+
+                            <span>{cuisineType.name}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className=" flex flex-col">
+                        <label>Language</label>
+                        <div className="flex flex-row justify-start items-center flex-wrap">
+                          {options.languages.map((option) => (
+                            <div
+                              key={option.value}
+                              onClick={() => {
+                                //@ts-ignore
+
+                                handleLanguageClick(option)
+                              }}
+                              //@ts-ignore
+
+                              value={values.language}
+                              className={
+                                //@ts-ignore
+
+                                selectedLanguage === option.value
+                                  ? "flex border border-emerald-600  text-2xl flex-col items-center mr-1 p-2 rounded-md cursor-pointer"
+                                  : "flex text-2xl flex-col items-center mr-1 p-2 rounded-md cursor-pointer"
+                              }
+                            >
+                              <span role="img" aria-label={option.label}>
+                                {option.icon}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <button
+                        //@ts-ignore
+
+                        loading={loading}
+                        type="submit"
+                        disabled={loading}
+                        className="bg-red-600 py-2 px-2 cursor-pointer"
+                      >
+                        SUBMIT
+                      </button>
+                    </form>
+                  ) : (
+                    <ResponseData response={response} />
+                  )}
                 </div>
               </div>
               {/* End secondary column */}
