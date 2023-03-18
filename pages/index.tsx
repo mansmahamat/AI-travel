@@ -397,7 +397,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="h-full flex">
+      <div className="h-screen flex">
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
@@ -484,7 +484,7 @@ export default function Home() {
                     </div>
                   </nav>
                 </div>
-                <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
+                <div className="flex-shrink-0 flex border-t  p-4">
                   <a href="#" className="flex-shrink-0 group block">
                     <div className="flex items-center">
                       <div>
@@ -518,7 +518,7 @@ export default function Home() {
         <div className="hidden lg:flex lg:flex-shrink-0">
           <div className="flex flex-col w-64">
             {/* Sidebar component, swap this element with another sidebar if you like */}
-            <div className="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-gray-100">
+            <div className="flex-1 flex flex-col min-h-0 border-r  bg-gray-100">
               <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
                 <div className="flex items-center flex-shrink-0 px-4">
                   <img
@@ -555,7 +555,7 @@ export default function Home() {
                   </div>
                 </nav>
               </div>
-              <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
+              <div className="flex-shrink-0 flex border-t  p-4">
                 <a href="#" className="flex-shrink-0 w-full group block">
                   <div className="flex items-center">
                     <div>
@@ -579,9 +579,9 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col min-w-0 flex-1 overflow-hidden">
+        <div className="flex flex-col min-w-0 flex-1 ">
           <div className="lg:hidden">
-            <div className="flex items-center justify-between bg-gray-50 border-b border-gray-200 px-4 py-1.5">
+            <div className="flex items-center justify-between bg-gray-50 border-b  px-4 py-1.5">
               <div>
                 <img
                   className="h-8 w-auto"
@@ -601,11 +601,11 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="flex-1 relative z-0 flex overflow-hidden">
+          <div className="flex-1 relative z-0 flex ">
             <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none xl:order-last">
               {/* Start main area*/}
               <div className="absolute inset-0 py-6 px-4 sm:px-6 lg:px-8">
-                <div className="h-full border-2  rounded-lg">
+                <div className="h-full   rounded-lg">
                   {loading
                     ? "LOADING"
                     : response && <ResponseData response={response} />}
@@ -613,11 +613,11 @@ export default function Home() {
               </div>
               {/* End main area */}
             </main>
-            <aside className="hidden relative xl:order-first xl:flex xl:flex-col flex-shrink-0 w-96 border-r border-gray-200 overflow-y-auto">
+            <aside className="hidden relative xl:order-first xl:flex xl:flex-col flex-shrink-0 w-96 border-r  ">
               {/* Start secondary column (hidden on smaller screens) */}
 
               <div className="absolute inset-0 py-6 px-4 sm:px-6 lg:px-8">
-                <div className="h-full border-2  rounded-lg">
+                <div className="h-full   rounded-lg">
                   <form className=" h-full" onSubmit={handleSubmit}>
                     <label htmlFor="destinationCountry">
                       Destination Country
